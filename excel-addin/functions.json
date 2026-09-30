@@ -1,0 +1,517 @@
+{
+  "functions": [
+    {
+      "id": "TAKEHOME",
+      "name": "TAKEHOME",
+      "description": "月給・賞与から1年間の手取り額を計算します(2026年度の率・会社員・独身で扶養なし)。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#TAKEHOME",
+      "parameters": [
+        {
+          "name": "monthlySalary",
+          "description": "月給(額面・各種手当込み)。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        },
+        {
+          "name": "bonus",
+          "description": "年間の賞与の合計(省略時は0)",
+          "type": "any",
+          "dimensionality": "scalar",
+          "optional": true
+        },
+        {
+          "name": "age",
+          "description": "年齢(40〜64歳は介護保険がかかる。省略時は30)",
+          "type": "any",
+          "dimensionality": "scalar",
+          "optional": true
+        },
+        {
+          "name": "prefecture",
+          "description": "勤務先の協会けんぽの都道府県(省略時は東京都)",
+          "type": "any",
+          "dimensionality": "scalar",
+          "optional": true
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "TAKEHOME_DETAIL",
+      "name": "TAKEHOME_DETAIL",
+      "description": "手取りの内訳(社会保険料・所得税・住民税)を2列の表で返します(2026年度の率)。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#TAKEHOME_DETAIL",
+      "parameters": [
+        {
+          "name": "monthlySalary",
+          "description": "月給(額面・各種手当込み)",
+          "type": "any",
+          "dimensionality": "scalar"
+        },
+        {
+          "name": "bonus",
+          "description": "年間の賞与の合計(省略時は0)",
+          "type": "any",
+          "dimensionality": "scalar",
+          "optional": true
+        },
+        {
+          "name": "age",
+          "description": "年齢(40〜64歳は介護保険がかかる。省略時は30)",
+          "type": "any",
+          "dimensionality": "scalar",
+          "optional": true
+        },
+        {
+          "name": "prefecture",
+          "description": "勤務先の協会けんぽの都道府県(省略時は東京都)",
+          "type": "any",
+          "dimensionality": "scalar",
+          "optional": true
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "ANNUAL_INCOME",
+      "name": "ANNUAL_INCOME",
+      "description": "求人の給与欄の文章から年収の目安を計算します(月給×(12+賞与の月数)、年俸があれば年俸)。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#ANNUAL_INCOME",
+      "parameters": [
+        {
+          "name": "salaryText",
+          "description": "給与欄の文章。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        },
+        {
+          "name": "workText",
+          "description": "勤務時間・休日の文章(省略可)",
+          "type": "any",
+          "dimensionality": "scalar",
+          "optional": true
+        },
+        {
+          "name": "which",
+          "description": "\"min\"(下限・省略時)または \"max\"(上限)",
+          "type": "any",
+          "dimensionality": "scalar",
+          "optional": true
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "HOURLY_EQUIVALENT",
+      "name": "HOURLY_EQUIVALENT",
+      "description": "求人の給与欄の文章から、時給に換算した額(下限)を計算します。時給の求人や読めない時は空。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#HOURLY_EQUIVALENT",
+      "parameters": [
+        {
+          "name": "salaryText",
+          "description": "給与欄の文章。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        },
+        {
+          "name": "workText",
+          "description": "勤務時間・休日の文章(無ければ1日8時間・年間休日120日と仮定)",
+          "type": "any",
+          "dimensionality": "scalar",
+          "optional": true
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "FIXED_OVERTIME",
+      "name": "FIXED_OVERTIME",
+      "description": "求人の給与欄から固定残業代(みなし残業代)の金額を取り出します。書かれていなければ空。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#FIXED_OVERTIME",
+      "parameters": [
+        {
+          "name": "salaryText",
+          "description": "給与欄の文章。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "YEN",
+      "name": "YEN",
+      "description": "日本語の金額の書き方を数値にします(例: 1億2000万円 → 120000000)。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#YEN",
+      "parameters": [
+        {
+          "name": "text",
+          "description": "金額の文字列。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "AREA_M2",
+      "name": "AREA_M2",
+      "description": "面積の書き方を㎡にします(例: 10坪 → 33.06)。数値はそのまま㎡とみなします。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#AREA_M2",
+      "parameters": [
+        {
+          "name": "text",
+          "description": "面積の文字列。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "TSUBO_PRICE",
+      "name": "TSUBO_PRICE",
+      "description": "坪単価(価格または賃料 ÷ 坪数)を計算します。「4,980万円」「70.12㎡」のような書き方も可。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#TSUBO_PRICE",
+      "parameters": [
+        {
+          "name": "price",
+          "description": "価格または賃料。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        },
+        {
+          "name": "area",
+          "description": "面積(数値は㎡)",
+          "type": "any",
+          "dimensionality": "scalar"
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "LOAN_PAYMENT",
+      "name": "LOAN_PAYMENT",
+      "description": "住宅ローンの毎月の返済額(元利均等)を計算します。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#LOAN_PAYMENT",
+      "parameters": [
+        {
+          "name": "principal",
+          "description": "借入額(「3,000万円」のような書き方も可)。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        },
+        {
+          "name": "ratePercent",
+          "description": "年利(%・省略時は1)",
+          "type": "any",
+          "dimensionality": "scalar",
+          "optional": true
+        },
+        {
+          "name": "years",
+          "description": "返済期間(年・省略時は35)",
+          "type": "any",
+          "dimensionality": "scalar",
+          "optional": true
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "WAREKI",
+      "name": "WAREKI",
+      "description": "日付を和暦にします(例: 2026/9/24 → 令和8年9月24日)。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#WAREKI",
+      "parameters": [
+        {
+          "name": "date",
+          "description": "日付。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        },
+        {
+          "name": "format",
+          "description": "\"long\"(令和8年9月24日・省略時)または \"short\"(R8.9.24)",
+          "type": "any",
+          "dimensionality": "scalar",
+          "optional": true
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "FROM_WAREKI",
+      "name": "FROM_WAREKI",
+      "description": "和暦の文字列を日付(シリアル値)にします(例: 令和6年4月1日、R6.4.1、平成元年1月8日)。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#FROM_WAREKI",
+      "parameters": [
+        {
+          "name": "text",
+          "description": "和暦の文字列。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "IS_HOLIDAY",
+      "name": "IS_HOLIDAY",
+      "description": "日本の祝日(振替休日・国民の休日を含む)かどうかを返します。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#IS_HOLIDAY",
+      "parameters": [
+        {
+          "name": "date",
+          "description": "日付。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "HOLIDAY_NAME",
+      "name": "HOLIDAY_NAME",
+      "description": "祝日の名前を返します(祝日でなければ空)。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#HOLIDAY_NAME",
+      "parameters": [
+        {
+          "name": "date",
+          "description": "日付。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "IS_BUSINESS_DAY",
+      "name": "IS_BUSINESS_DAY",
+      "description": "営業日(土日・祝日・指定した休業日以外)かどうかを返します。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#IS_BUSINESS_DAY",
+      "parameters": [
+        {
+          "name": "date",
+          "description": "日付。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        },
+        {
+          "name": "yearEndClosure",
+          "description": "TRUE なら12月29日〜1月3日を休みとして扱う",
+          "type": "any",
+          "dimensionality": "scalar",
+          "optional": true
+        },
+        {
+          "name": "closedDates",
+          "description": "独自の休業日の範囲(省略可)",
+          "type": "any",
+          "dimensionality": "matrix",
+          "optional": true
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "WORKDAY",
+      "name": "WORKDAY",
+      "description": "○営業日後(マイナスなら前)の日付を返します。日本の祝日に対応した WORKDAY です。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#WORKDAY",
+      "parameters": [
+        {
+          "name": "date",
+          "description": "開始日(この日は数えない)。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        },
+        {
+          "name": "days",
+          "description": "営業日数(マイナスで前へ)",
+          "type": "any",
+          "dimensionality": "scalar"
+        },
+        {
+          "name": "yearEndClosure",
+          "description": "TRUE なら12月29日〜1月3日を休みとして扱う",
+          "type": "any",
+          "dimensionality": "scalar",
+          "optional": true
+        },
+        {
+          "name": "closedDates",
+          "description": "独自の休業日の範囲(省略可)",
+          "type": "any",
+          "dimensionality": "matrix",
+          "optional": true
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "NETWORKDAYS",
+      "name": "NETWORKDAYS",
+      "description": "期間の営業日数を返します(開始日・終了日を含む)。日本の祝日に対応した NETWORKDAYS です。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#NETWORKDAYS",
+      "parameters": [
+        {
+          "name": "startDate",
+          "description": "開始日",
+          "type": "any",
+          "dimensionality": "scalar"
+        },
+        {
+          "name": "endDate",
+          "description": "終了日",
+          "type": "any",
+          "dimensionality": "scalar"
+        },
+        {
+          "name": "yearEndClosure",
+          "description": "TRUE なら12月29日〜1月3日を休みとして扱う",
+          "type": "any",
+          "dimensionality": "scalar",
+          "optional": true
+        },
+        {
+          "name": "closedDates",
+          "description": "独自の休業日の範囲(省略可)",
+          "type": "any",
+          "dimensionality": "matrix",
+          "optional": true
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "scalar"
+      }
+    },
+    {
+      "id": "HOLIDAYS",
+      "name": "HOLIDAYS",
+      "description": "その年の祝日の一覧(日付のシリアル値と祝日名の2列)を返します(内閣府の公式データ)。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#HOLIDAYS",
+      "parameters": [
+        {
+          "name": "year",
+          "description": "年(例: 2026)",
+          "type": "any",
+          "dimensionality": "scalar"
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "PAYMENT_DATE",
+      "name": "PAYMENT_DATE",
+      "description": "支払条件(例: 末締め翌月25日払い)から支払日(シリアル値)を返します。土日・祝日なら前営業日にします。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#PAYMENT_DATE",
+      "parameters": [
+        {
+          "name": "date",
+          "description": "取引日・請求日。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        },
+        {
+          "name": "terms",
+          "description": "支払条件の文章(例: 末締め翌月25日払い、20日締め翌々月末日支払)。行ごとに違う条件なら範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        },
+        {
+          "name": "holidayRule",
+          "description": "休日の時: \"前\"(前営業日・省略時)、\"翌\"(翌営業日)、\"なし\"。文章に「翌営業日」とあればそれに従う",
+          "type": "any",
+          "dimensionality": "scalar",
+          "optional": true
+        },
+        {
+          "name": "closedDates",
+          "description": "独自の休業日の範囲(省略可)",
+          "type": "any",
+          "dimensionality": "matrix",
+          "optional": true
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "WITHHOLDING",
+      "name": "WITHHOLDING",
+      "description": "報酬・料金の源泉徴収税額を返します(100万円までは10.21%、超える部分は20.42%。1円未満切り捨て)。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#WITHHOLDING",
+      "parameters": [
+        {
+          "name": "amount",
+          "description": "報酬の額(税抜。「10万円」のような書き方も可)。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        },
+        {
+          "name": "includesTax",
+          "description": "TRUE なら、消費税を区分していない税込の額として扱う",
+          "type": "any",
+          "dimensionality": "scalar",
+          "optional": true
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    }
+  ]
+}

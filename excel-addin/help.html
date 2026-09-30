@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>日本の計算関数(Excel)の使い方</title>
+    <style>
+      :root { color-scheme: light dark; --fg: #1f2937; --sub: #4b5563; --bg: #fff; --code: #f1f5f9; --accent: #1d7a3e; }
+      @media (prefers-color-scheme: dark) { :root { --fg: #e5e7eb; --sub: #9ca3af; --bg: #111827; --code: #1f2937; --accent: #4ade80; } }
+      body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.7 "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif; }
+      .wrap { max-width: 760px; margin: 0 auto; padding: 16px; }
+      h1 { font-size: 18px; margin: 4px 0 8px; }
+      h2 { font-size: 15px; color: var(--accent); margin: 24px 0 4px; border-bottom: 1px solid color-mix(in srgb, var(--sub) 30%, transparent); padding-bottom: 4px; }
+      code { background: var(--code); padding: 1px 4px; border-radius: 3px; font-size: 12.5px; overflow-wrap: anywhere; }
+      dt { margin-top: 14px; font-weight: 600; }
+      dd { margin: 2px 0 0; color: var(--sub); }
+      dd ul { margin: 4px 0; padding-left: 18px; }
+      .ex { margin-top: 2px; }
+      .note { color: var(--sub); font-size: 13px; }
+      a { color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+    <h1>日本の計算関数(Excel)</h1>
+    <p>セルに <code>=JP.</code> と入力すると関数の一覧が出ます。「範囲も可」の引数に範囲(<code>A2:A100</code>)を渡すと、行ごとにまとめて計算します。</p>
+    <p class="note">日付を返す関数(WORKDAY・FROM_WAREKI・HOLIDAYS)はシリアル値を返します。セルの表示形式を「日付」にしてください(Excel 標準の WORKDAY と同じです)。
+    計算はすべて Excel の中で行い、入力した値を外部に送りません。</p>
+    <h2>手取り(2026年度の率)</h2>
+    <dl>
+      <dt id="TAKEHOME"><code>=JP.TAKEHOME(monthlySalary, [bonus], [age], [prefecture])</code></dt>
+      <dd>月給・賞与から1年間の手取り額を計算します(2026年度の率・会社員・独身で扶養なし)。<ul><li><code>monthlySalary</code> … 月給(額面・各種手当込み)。範囲も可</li><li><code>bonus</code> … 年間の賞与の合計(省略時は0)</li><li><code>age</code> … 年齢(40〜64歳は介護保険がかかる。省略時は30)</li><li><code>prefecture</code> … 勤務先の協会けんぽの都道府県(省略時は東京都)</li></ul><div class="ex">例: <code>=JP.TAKEHOME(300000) → 2,876,160</code></div></dd>
+      <dt id="TAKEHOME_DETAIL"><code>=JP.TAKEHOME_DETAIL(monthlySalary, [bonus], [age], [prefecture])</code></dt>
+      <dd>手取りの内訳(社会保険料・所得税・住民税)を2列の表で返します(2026年度の率)。<ul><li><code>monthlySalary</code> … 月給(額面・各種手当込み)</li><li><code>bonus</code> … 年間の賞与の合計(省略時は0)</li><li><code>age</code> … 年齢(40〜64歳は介護保険がかかる。省略時は30)</li><li><code>prefecture</code> … 勤務先の協会けんぽの都道府県(省略時は東京都)</li></ul><div class="ex">例: <code>=JP.TAKEHOME_DETAIL(300000)</code></div></dd>
+    </dl>
+    <h2>求人の給与</h2>
+    <dl>
+      <dt id="ANNUAL_INCOME"><code>=JP.ANNUAL_INCOME(salaryText, [workText], [which])</code></dt>
+      <dd>求人の給与欄の文章から年収の目安を計算します(月給×(12+賞与の月数)、年俸があれば年俸)。<ul><li><code>salaryText</code> … 給与欄の文章。範囲も可</li><li><code>workText</code> … 勤務時間・休日の文章(省略可)</li><li><code>which</code> … &quot;min&quot;(下限・省略時)または &quot;max&quot;(上限)</li></ul><div class="ex">例: <code>=JP.ANNUAL_INCOME(&quot;月給25万円～＋賞与年2回（4.5ヶ月分）&quot;) → 4,125,000</code></div></dd>
+      <dt id="HOURLY_EQUIVALENT"><code>=JP.HOURLY_EQUIVALENT(salaryText, [workText])</code></dt>
+      <dd>求人の給与欄の文章から、時給に換算した額(下限)を計算します。時給の求人や読めない時は空。<ul><li><code>salaryText</code> … 給与欄の文章。範囲も可</li><li><code>workText</code> … 勤務時間・休日の文章(無ければ1日8時間・年間休日120日と仮定)</li></ul><div class="ex">例: <code>=JP.HOURLY_EQUIVALENT(&quot;月給30万円&quot;, &quot;実働8時間 年間休日125日&quot;)</code></div></dd>
+      <dt id="FIXED_OVERTIME"><code>=JP.FIXED_OVERTIME(salaryText)</code></dt>
+      <dd>求人の給与欄から固定残業代(みなし残業代)の金額を取り出します。書かれていなければ空。<ul><li><code>salaryText</code> … 給与欄の文章。範囲も可</li></ul><div class="ex">例: <code>=JP.FIXED_OVERTIME(&quot;月給30万円（固定残業代40時間分・5万円を含む）&quot;) → 50,000</code></div></dd>
+    </dl>
+    <h2>金額・物件</h2>
+    <dl>
+      <dt id="YEN"><code>=JP.YEN(text)</code></dt>
+      <dd>日本語の金額の書き方を数値にします(例: 1億2000万円 → 120000000)。<ul><li><code>text</code> … 金額の文字列。範囲も可</li></ul><div class="ex">例: <code>=JP.YEN(&quot;1億2000万円&quot;) → 120,000,000</code></div></dd>
+      <dt id="AREA_M2"><code>=JP.AREA_M2(text)</code></dt>
+      <dd>面積の書き方を㎡にします(例: 10坪 → 33.06)。数値はそのまま㎡とみなします。<ul><li><code>text</code> … 面積の文字列。範囲も可</li></ul><div class="ex">例: <code>=JP.AREA_M2(&quot;10坪&quot;) → 33.06</code></div></dd>
+      <dt id="TSUBO_PRICE"><code>=JP.TSUBO_PRICE(price, area)</code></dt>
+      <dd>坪単価(価格または賃料 ÷ 坪数)を計算します。「4,980万円」「70.12㎡」のような書き方も可。<ul><li><code>price</code> … 価格または賃料。範囲も可</li><li><code>area</code> … 面積(数値は㎡)</li></ul><div class="ex">例: <code>=JP.TSUBO_PRICE(&quot;4,980万円&quot;, &quot;70.12㎡&quot;)</code></div></dd>
+      <dt id="LOAN_PAYMENT"><code>=JP.LOAN_PAYMENT(principal, [ratePercent], [years])</code></dt>
+      <dd>住宅ローンの毎月の返済額(元利均等)を計算します。<ul><li><code>principal</code> … 借入額(「3,000万円」のような書き方も可)。範囲も可</li><li><code>ratePercent</code> … 年利(%・省略時は1)</li><li><code>years</code> … 返済期間(年・省略時は35)</li></ul><div class="ex">例: <code>=JP.LOAN_PAYMENT(&quot;3000万円&quot;, 1, 35)</code></div></dd>
+    </dl>
+    <h2>和暦・祝日・営業日</h2>
+    <dl>
+      <dt id="WAREKI"><code>=JP.WAREKI(date, [format])</code></dt>
+      <dd>日付を和暦にします(例: 2026/9/24 → 令和8年9月24日)。<ul><li><code>date</code> … 日付。範囲も可</li><li><code>format</code> … &quot;long&quot;(令和8年9月24日・省略時)または &quot;short&quot;(R8.9.24)</li></ul><div class="ex">例: <code>=JP.WAREKI(A2) → 令和8年9月24日</code></div></dd>
+      <dt id="FROM_WAREKI"><code>=JP.FROM_WAREKI(text)</code></dt>
+      <dd>和暦の文字列を日付(シリアル値)にします(例: 令和6年4月1日、R6.4.1、平成元年1月8日)。<ul><li><code>text</code> … 和暦の文字列。範囲も可</li></ul><div class="ex">例: <code>=JP.FROM_WAREKI(&quot;R6.4.1&quot;) → 2024/4/1(表示形式を日付に)</code></div></dd>
+      <dt id="IS_HOLIDAY"><code>=JP.IS_HOLIDAY(date)</code></dt>
+      <dd>日本の祝日(振替休日・国民の休日を含む)かどうかを返します。<ul><li><code>date</code> … 日付。範囲も可</li></ul><div class="ex">例: <code>=JP.IS_HOLIDAY(A2)</code></div></dd>
+      <dt id="HOLIDAY_NAME"><code>=JP.HOLIDAY_NAME(date)</code></dt>
+      <dd>祝日の名前を返します(祝日でなければ空)。<ul><li><code>date</code> … 日付。範囲も可</li></ul><div class="ex">例: <code>=JP.HOLIDAY_NAME(A2) → 敬老の日</code></div></dd>
+      <dt id="IS_BUSINESS_DAY"><code>=JP.IS_BUSINESS_DAY(date, [yearEndClosure], [closedDates])</code></dt>
+      <dd>営業日(土日・祝日・指定した休業日以外)かどうかを返します。<ul><li><code>date</code> … 日付。範囲も可</li><li><code>yearEndClosure</code> … TRUE なら12月29日〜1月3日を休みとして扱う</li><li><code>closedDates</code> … 独自の休業日の範囲(省略可)</li></ul><div class="ex">例: <code>=JP.IS_BUSINESS_DAY(A2, TRUE)</code></div></dd>
+      <dt id="WORKDAY"><code>=JP.WORKDAY(date, days, [yearEndClosure], [closedDates])</code></dt>
+      <dd>○営業日後(マイナスなら前)の日付を返します。日本の祝日に対応した WORKDAY です。<ul><li><code>date</code> … 開始日(この日は数えない)。範囲も可</li><li><code>days</code> … 営業日数(マイナスで前へ)</li><li><code>yearEndClosure</code> … TRUE なら12月29日〜1月3日を休みとして扱う</li><li><code>closedDates</code> … 独自の休業日の範囲(省略可)</li></ul><div class="ex">例: <code>=JP.WORKDAY(A2, 5) → 5営業日後(表示形式を日付に)</code></div></dd>
+      <dt id="NETWORKDAYS"><code>=JP.NETWORKDAYS(startDate, endDate, [yearEndClosure], [closedDates])</code></dt>
+      <dd>期間の営業日数を返します(開始日・終了日を含む)。日本の祝日に対応した NETWORKDAYS です。<ul><li><code>startDate</code> … 開始日</li><li><code>endDate</code> … 終了日</li><li><code>yearEndClosure</code> … TRUE なら12月29日〜1月3日を休みとして扱う</li><li><code>closedDates</code> … 独自の休業日の範囲(省略可)</li></ul><div class="ex">例: <code>=JP.NETWORKDAYS(A2, B2)</code></div></dd>
+      <dt id="HOLIDAYS"><code>=JP.HOLIDAYS(year)</code></dt>
+      <dd>その年の祝日の一覧(日付のシリアル値と祝日名の2列)を返します(内閣府の公式データ)。<ul><li><code>year</code> … 年(例: 2026)</li></ul><div class="ex">例: <code>=JP.HOLIDAYS(2026)</code></div></dd>
+    </dl>
+    <h2>請求・支払</h2>
+    <dl>
+      <dt id="PAYMENT_DATE"><code>=JP.PAYMENT_DATE(date, terms, [holidayRule], [closedDates])</code></dt>
+      <dd>支払条件(例: 末締め翌月25日払い)から支払日(シリアル値)を返します。土日・祝日なら前営業日にします。<ul><li><code>date</code> … 取引日・請求日。範囲も可</li><li><code>terms</code> … 支払条件の文章(例: 末締め翌月25日払い、20日締め翌々月末日支払)。行ごとに違う条件なら範囲も可</li><li><code>holidayRule</code> … 休日の時: &quot;前&quot;(前営業日・省略時)、&quot;翌&quot;(翌営業日)、&quot;なし&quot;。文章に「翌営業日」とあればそれに従う</li><li><code>closedDates</code> … 独自の休業日の範囲(省略可)</li></ul><div class="ex">例: <code>=JP.PAYMENT_DATE(A2, &quot;末締め翌月25日払い&quot;) → 25日が休日なら前営業日(表示形式を日付に)</code></div></dd>
+      <dt id="WITHHOLDING"><code>=JP.WITHHOLDING(amount, [includesTax])</code></dt>
+      <dd>報酬・料金の源泉徴収税額を返します(100万円までは10.21%、超える部分は20.42%。1円未満切り捨て)。<ul><li><code>amount</code> … 報酬の額(税抜。「10万円」のような書き方も可)。範囲も可</li><li><code>includesTax</code> … TRUE なら、消費税を区分していない税込の額として扱う</li></ul><div class="ex">例: <code>=JP.WITHHOLDING(100000) → 10,210</code></div></dd>
+    </dl>
+    <p class="note">手取りは協会けんぽ・2026年度の率による概算です。税務・法律の助言ではありません。
+    <a href="https://pokeca-kaigai.com/excel-addin-privacy.html">プライバシーポリシー</a> ・
+    <a href="https://pokeca-kaigai.com/excel-addin-terms.html">利用規約</a></p>
+    </div>
+  </body>
+</html>
