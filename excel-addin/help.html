@@ -78,6 +78,10 @@
       <dd>支払条件(例: 末締め翌月25日払い)から支払日(シリアル値)を返します。土日・祝日なら前営業日にします。<ul><li><code>date</code> … 取引日・請求日。範囲も可</li><li><code>terms</code> … 支払条件の文章(例: 末締め翌月25日払い、20日締め翌々月末日支払)。行ごとに違う条件なら範囲も可</li><li><code>holidayRule</code> … 休日の時: &quot;前&quot;(前営業日・省略時)、&quot;翌&quot;(翌営業日)、&quot;なし&quot;。文章に「翌営業日」とあればそれに従う</li><li><code>closedDates</code> … 独自の休業日の範囲(省略可)</li></ul><div class="ex">例: <code>=JP.PAYMENT_DATE(A2, &quot;末締め翌月25日払い&quot;) → 25日が休日なら前営業日(表示形式を日付に)</code></div></dd>
       <dt id="WITHHOLDING"><code>=JP.WITHHOLDING(amount, [includesTax])</code></dt>
       <dd>報酬・料金の源泉徴収税額を返します(100万円までは10.21%、超える部分は20.42%。1円未満切り捨て)。<ul><li><code>amount</code> … 報酬の額(税抜。「10万円」のような書き方も可)。範囲も可</li><li><code>includesTax</code> … TRUE なら、消費税を区分していない税込の額として扱う</li></ul><div class="ex">例: <code>=JP.WITHHOLDING(100000) → 10,210</code></div></dd>
+      <dt id="IS_VALID_REGNO"><code>=JP.IS_VALID_REGNO(number)</code></dt>
+      <dd>インボイスの登録番号(T + 13桁)または法人番号(13桁)が正しい形か(検査用数字が合うか)を返します。登録されているかは国税庁のサイトで確認してください。<ul><li><code>number</code> … 登録番号または法人番号(全角・ハイフン可)。範囲も可</li></ul><div class="ex">例: <code>=JP.IS_VALID_REGNO(&quot;T7000012050002&quot;) → TRUE</code></div></dd>
+      <dt id="REGNO"><code>=JP.REGNO(number)</code></dt>
+      <dd>登録番号・法人番号を「T + 13桁」の形に整えます(全角・空白・ハイフンを除き、法人番号なら先頭に T)。<ul><li><code>number</code> … 登録番号または法人番号。範囲も可</li></ul><div class="ex">例: <code>=JP.REGNO(&quot;登録番号：Ｔ７０００－０１２０－５０００２&quot;) → T7000012050002</code></div></dd>
     </dl>
     <p class="note">手取りは協会けんぽ・2026年度の率による概算です。税務・法律の助言ではありません。
     <a href="https://pokeca-kaigai.com/excel-addin-privacy.html">プライバシーポリシー</a> ・

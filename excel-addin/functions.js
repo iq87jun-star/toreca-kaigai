@@ -1105,6 +1105,63 @@ ${work}`;
     };
   }
 
+  // ../calc-api/src/regno.js
+  var MAX_INPUT = 40;
+  function checkDigitOf(base12) {
+    let sum = 0;
+    for (let n = 1; n <= 12; n++) sum += Number(base12[12 - n]) * (n % 2 === 1 ? 1 : 2);
+    return 9 - sum % 9;
+  }
+  function normalizeNumber(input) {
+    const s = String(input != null ? input : "").normalize("NFKC").toUpperCase().replace(/[\s\-‐‑‒–—―ー−]/g, "");
+    let best = null;
+    for (const m of s.matchAll(/(T?)(\d+)/g)) if (!best || m[2].length > best[2].length) best = m;
+    return best ? best[1] + best[2] : "";
+  }
+  var ERRORS = {
+    empty: { ja: "番号がありません", en: "No number found" },
+    length: { ja: "数字が13桁ではありません", en: "The number must have 13 digits" },
+    check_digit: {
+      ja: "検査用数字(先頭の1桁)が合いません。打ち間違いの可能性があります",
+      en: "Check digit (first digit) does not match; the number is probably mistyped"
+    }
+  };
+  function validateNumber(body) {
+    const input = body == null ? void 0 : body.number;
+    if (typeof input !== "string" && typeof input !== "number") {
+      throw new InputError('"number" is required (e.g. "T1234567890123" or a 13-digit corporate number)', "number");
+    }
+    if (String(input).length > MAX_INPUT) {
+      throw new InputError(`"number" must be ${MAX_INPUT} characters or less`, "number");
+    }
+    const normalized = normalizeNumber(input);
+    const isRegistration = normalized.startsWith("T");
+    const digits = normalized.replace(/^T/, "");
+    const result = {
+      input: String(input),
+      type: isRegistration ? "registration_number" : "corporate_number",
+      normalized: normalized || null,
+      valid: false,
+      error: null,
+      checkDigit: null,
+      expectedCheckDigit: null,
+      registrationNumber: null,
+      lookupUrl: null
+    };
+    const fail = (code) => __spreadProps(__spreadValues({}, result), { error: __spreadValues({ code }, ERRORS[code]) });
+    if (!digits) return fail("empty");
+    if (digits.length !== 13) return fail("length");
+    const expected = checkDigitOf(digits.slice(1));
+    Object.assign(result, { checkDigit: Number(digits[0]), expectedCheckDigit: expected });
+    if (Number(digits[0]) !== expected) return fail("check_digit");
+    return __spreadProps(__spreadValues({}, result), {
+      valid: true,
+      // 法人番号なら、その法人の登録番号は T + 法人番号(登録しているかは別)
+      registrationNumber: `T${digits}`,
+      lookupUrl: isRegistration ? `https://www.invoice-kohyo.nta.go.jp/regno-search/detail?selRegNo=${digits}` : `https://www.houjin-bangou.nta.go.jp/henkorireki-johoto.html?selHouzinNo=${digits}`
+    });
+  }
+
   // src/functions.js
   var Realty2 = globalThis.RealtyParser;
   var DAY3 = 864e5;
@@ -1489,6 +1546,28 @@ ${work}`;
         amount,
         (a) => withholding({ amount: Math.round(num2(a, "報酬の額")), amountIncludesTax: yes(includesTax) }).withholdingTax
       )
+    },
+    {
+      name: "IS_VALID_REGNO",
+      category: "invoice",
+      description: "インボイスの登録番号(T + 13桁)または法人番号(13桁)が正しい形か(検査用数字が合うか)を返します。登録されているかは国税庁のサイトで確認してください。",
+      example: '=JP.IS_VALID_REGNO("T7000012050002") → TRUE',
+      params: [{ name: "number", description: "登録番号または法人番号(全角・ハイフン可)。範囲も可", range: true }],
+      result: "matrix",
+      fn: (number) => mapCells(number, (n) => validateNumber({ number: String(n) }).valid)
+    },
+    {
+      name: "REGNO",
+      category: "invoice",
+      description: "登録番号・法人番号を「T + 13桁」の形に整えます(全角・空白・ハイフンを除き、法人番号なら先頭に T)。",
+      example: '=JP.REGNO("登録番号：Ｔ７０００－０１２０－５０００２") → T7000012050002',
+      params: [{ name: "number", description: "登録番号または法人番号。範囲も可", range: true }],
+      result: "matrix",
+      fn: (number) => mapCells(number, (n) => {
+        const r = validateNumber({ number: String(n) });
+        if (!r.valid) throw new Error(`${r.error.ja}: ${n}`);
+        return r.registrationNumber;
+      })
     }
   ];
 

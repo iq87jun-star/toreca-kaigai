@@ -512,6 +512,42 @@
         "type": "any",
         "dimensionality": "matrix"
       }
+    },
+    {
+      "id": "IS_VALID_REGNO",
+      "name": "IS_VALID_REGNO",
+      "description": "インボイスの登録番号(T + 13桁)または法人番号(13桁)が正しい形か(検査用数字が合うか)を返します。登録されているかは国税庁のサイトで確認してください。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#IS_VALID_REGNO",
+      "parameters": [
+        {
+          "name": "number",
+          "description": "登録番号または法人番号(全角・ハイフン可)。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
+    },
+    {
+      "id": "REGNO",
+      "name": "REGNO",
+      "description": "登録番号・法人番号を「T + 13桁」の形に整えます(全角・空白・ハイフンを除き、法人番号なら先頭に T)。",
+      "helpUrl": "https://pokeca-kaigai.com/excel-addin/help.html#REGNO",
+      "parameters": [
+        {
+          "name": "number",
+          "description": "登録番号または法人番号。範囲も可",
+          "type": "any",
+          "dimensionality": "matrix"
+        }
+      ],
+      "result": {
+        "type": "any",
+        "dimensionality": "matrix"
+      }
     }
   ]
 }
